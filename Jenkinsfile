@@ -9,6 +9,7 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 sh '''
+                    rm -rf .ansible
                     python3 -m venv venv
                     . venv/bin/activate
                     pip install --upgrade pip
@@ -22,6 +23,7 @@ pipeline {
         stage('Lint') {
             steps {
                 sh '''
+                    rm -rf .ansible
                     . venv/bin/activate
                     ansible-lint .
                 '''
@@ -42,7 +44,7 @@ pipeline {
             steps {
                 sh '''
                     mkdir -p galaxy-private
-                    tar --exclude='.git' --exclude='venv' --exclude='.molecule' --exclude='.pip-cache' -czf galaxy-private/mon_role_web.tar.gz .
+                    tar --exclude='.git' --exclude='venv' --exclude='.molecule' --exclude='.pip-cache' --exclude='.ansible' -czf galaxy-private/mon_role_web.tar.gz .
                     echo "Role published locally in galaxy-private/"
                 '''
             }
