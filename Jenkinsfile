@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        PIP_CACHE_DIR = "${WORKSPACE}/.pip-cache"
+    }
+
     stages {
         stage('Install dependencies') {
             steps {
@@ -8,7 +12,7 @@ pipeline {
                     python3 -m venv venv
                     . venv/bin/activate
                     pip install --upgrade pip
-                    pip install -r requirements.txt
+                    pip install --cache-dir $PIP_CACHE_DIR -r requirements.txt
                     ansible-galaxy collection install community.docker
                     ansible-galaxy collection install ansible.posix
                 '''
@@ -28,7 +32,8 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    molecule test
+                    molecule destroy || true
+                    molecule test --destroy always
                 '''
             }
         }
@@ -37,10 +42,19 @@ pipeline {
             steps {
                 sh '''
                     mkdir -p galaxy-private
-                    tar --exclude='.git' --exclude='venv' --exclude='.molecule' -czf galaxy-private/mon_role_web.tar.gz .
+                    tar --exclude='.git' --exclude='venv' --exclude='.molecule' --exclude='.pip-cache' -czf galaxy-private/mon_role_web.tar.gz .
                     echo "Role published locally in galaxy-private/"
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            sh '''
+                . venv/bin/activate || true
+                molecule destroy || true
+            '''
         }
     }
 }
