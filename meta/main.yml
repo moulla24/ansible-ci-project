@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  author: moulla
+  namespace: moulla
+  role_name: mon_role_web
+
+  description: Role Ansible pour installer nginx
+  company: ESP
+  license: MIT
+  min_ansible_version: "2.15"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+
+  galaxy_tags:
+    - nginx
+    - web
+    - ubuntu
+
+dependencies: []

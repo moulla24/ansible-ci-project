@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Vérifier que nginx est installé
+      ansible.builtin.command: nginx -v
+      register: nginx_version
+      changed_when: false
+
+    - name: Afficher la version nginx
+      ansible.builtin.debug:
+        var: nginx_version.stderr

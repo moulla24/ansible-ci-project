@@ -1,0 +1,21 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+
+platforms:
+  - name: ubuntu-test
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
+    pre_build_image: true
+    privileged: true
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      remote_tmp: /tmp/.ansible/tmp
+
+verifier:
+  name: ansible

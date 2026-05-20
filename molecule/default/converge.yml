@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  roles:
+    - role: moulla.mon_role_web
